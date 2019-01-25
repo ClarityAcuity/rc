@@ -29,6 +29,12 @@ Plug 'Valloric/YouCompleteMe'
 
 Plug 'vim-syntastic/syntastic'
 
+" Class Tagbar
+Plug 'majutsushi/tagbar'
+
+" Web APIs
+Plug 'mattn/webapi-vim'
+
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
@@ -56,6 +62,9 @@ Plug '~/my-prototype-plugin'
 
 " Vim-go
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+" rust.vim
+Plug 'rust-lang/rust.vim'
 
 " Initialize plugin system
 call plug#end()
@@ -147,7 +156,7 @@ endif
 set clipboard=unnamed
 
 "#######################################################
-" Color
+" Color
 set t_Co=256                  "set the terminal color to 256bit
 colo desert                   "個人喜好顏色配置
 set cursorline                "底線顯示目前游標行
@@ -159,7 +168,7 @@ hi CursorColumn cterm=none ctermbg=DarkGray ctermfg=White
 hi Search cterm=reverse ctermbg=none ctermfg=none
 
 "#######################################################
-" Statusline
+" Statusline
 " 啟動顯示狀態行1 總是顯示狀態行2
 "set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}
 set laststatus=2             "1啟動開啟，2顯示狀態列
@@ -198,6 +207,12 @@ let g:ycm_cache_omnifunc=0
 let g:ycm_complete_in_strings=1
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 
+" rust lang
+" auto rustfmt
+let g:rustfmt_autosave = 1
+" :RustPlay copy the url to the clipboard
+let g:rust_clip_command = 'xclip -selection clipboard'
+
 " golang
 au FileType go nmap gr (go-run)  
 au FileType go nmap gt (go-test)  
@@ -234,6 +249,10 @@ nmap <F12> :LLPStartPreview<cr>
 
 " python exec
 autocmd BufRead *.py nmap<leader>c :w<Esc>G:r!python3.4 %<CR>
+
+"#######################################################
+" Tagbar shortcut
+nmap <F8> :TagbarToggle<CR>
 
 "#######################################################
 " shortcut
