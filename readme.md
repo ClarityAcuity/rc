@@ -95,3 +95,21 @@ plugins=(
 - htop/atop/[glances](https://github.com/nicolargo/glances)/[mnom](http://nmon.sourceforge.net/pmwiki.php)
 
 - [neofetch](https://github.com/dylanaraps/neofetch)
+
+
+## graphics
+
+- mesa
+
+```shell
+sudo add-apt-repository ppa:ubuntu-x-swat/updates
+sudo apt-get dist-upgrade
+glxinfo | grep "OpenGL version"
+sudo apt-get install ppa-purge && sudo ppa-purge ppa:ubuntu-x-swat/updates
+```
+
+- vulkan (if needed)
+
+```shell
+sudo apt install mesa-vulkan-drivers vulkan-utils
+```
