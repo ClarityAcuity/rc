@@ -66,6 +66,9 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " rust.vim
 Plug 'rust-lang/rust.vim'
 
+" rust vim-racer
+Plug 'racer-rust/vim-racer'
+
 " Initialize plugin system
 call plug#end()
 
@@ -212,6 +215,13 @@ autocmd InsertLeave * if pumvisible() == 0|pclose|endif
 let g:rustfmt_autosave = 1
 " :RustPlay copy the url to the clipboard
 let g:rust_clip_command = 'xclip -selection clipboard'
+" Naturally, this needs to be set to wherever your rust source tree resides.
+let g:ycm_rust_src_path = $RUST_SRC_PATH
+" rust racer setup
+set hidden
+let g:racer_cmd = "/home/user/.cargo/bin/racer"
+let g:racer_experimental_completer = 1
+let g:racer_insert_paren = 1
 
 " golang
 au FileType go nmap gr (go-run)  
@@ -256,6 +266,8 @@ nmap <F8> :TagbarToggle<CR>
 
 "#######################################################
 " shortcut
+" YCM GoTo
+nnoremap <Leader>] :YcmCompleter GoTo<CR>
 " smart home鍵 可在insert按home回到行首非空白字元 再按一下跳到最前
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home> 

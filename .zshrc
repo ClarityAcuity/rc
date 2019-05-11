@@ -124,3 +124,11 @@ export NVM_DIR="$HOME/.nvm"
 # add rust path
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# add rust src path
+export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+
+# add go path
+export PATH="$PATH:/usr/local/go/bin"
+
+# add racer path
+export PATH="$HOME/.cargo/bin/racer:$PATH"
