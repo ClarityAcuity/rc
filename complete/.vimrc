@@ -16,6 +16,7 @@ set nocompatible
 " Specify a directory for plugins
 " - For Neovim: ~/.local/share/nvim/plugged
 " - Avoid using standard Vim directory names like 'plugin'
+" - Multiple Plug commands can be written in a single line using | separators
 call plug#begin('~/.vim/plugged')
 
 " Make sure you use single quotes
@@ -38,11 +39,13 @@ Plug 'mattn/webapi-vim'
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
-" Multiple Plug commands can be written in a single line using | separators
+" For snippets in Vim 
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
 " On-demand loading
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+
+" Clojure REPL 
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 
 " Using a non-master branch
@@ -59,6 +62,12 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
 " Unmanaged plugin (manually installed and updated)
 Plug '~/my-prototype-plugin'
+
+" vim-airline
+Plug 'vim-airline/vim-airline'
+
+" vim-airline-themes
+Plug 'vim-airline/vim-airline-themes'
 
 " Vim-go
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -209,6 +218,9 @@ let g:ycm_autoclose_preview_window_after_completion=1
 let g:ycm_cache_omnifunc=0
 let g:ycm_complete_in_strings=1
 autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+" air-line
+let g:airline_theme='simple'
 
 " rust lang
 " auto rustfmt

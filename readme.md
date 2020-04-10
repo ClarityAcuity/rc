@@ -52,7 +52,7 @@ see [autotools.rst](https://github.com/universal-ctags/ctags/blob/master/docs/au
 
 ## zsh setting
 
-### Install zsh and [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh)
+### Install zsh
 
 ```shell
 sudo apt install zsh
@@ -64,29 +64,15 @@ sudo apt install zsh
 chsh -s $(which zsh)
 ```
 
-### Powerline
+### [Zinit](https://github.com/zdharma/zinit)
 
 ```shell
-sudo apt install powerline fonts-powerline
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
 ```
 
-### Plugins
+### [Powerlevel](https://github.com/romkatv/powerlevel10k#zinit)
 
-```shell
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-```
-
-```zshrc
-plugins=(
-  git
-  sudo
-  colored-man-pages
-  zsh-syntax-highlighting
-  zsh-autosuggestions
-)
-```
+Add `zinit ice depth=1; zinit light romkatv/powerlevel10k` to ~/.zshrc, already here.
 
 ---
 
@@ -95,7 +81,6 @@ plugins=(
 - htop/atop/[glances](https://github.com/nicolargo/glances)/[mnom](http://nmon.sourceforge.net/pmwiki.php)
 
 - [neofetch](https://github.com/dylanaraps/neofetch)
-
 
 ## graphics
 
@@ -113,3 +98,17 @@ sudo apt-get install ppa-purge && sudo ppa-purge ppa:ubuntu-x-swat/updates
 ```shell
 sudo apt install mesa-vulkan-drivers vulkan-utils
 ```
+
+## Programing
+
+### Node
+
+[NVM](https://github.com/nvm-sh/nvm)
+
+### Rust
+
+Using [rustup](https://www.rust-lang.org/tools/install)
+
+### Go
+
+### Python
