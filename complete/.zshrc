@@ -1,7 +1,7 @@
 # OK to perform console I/O before this point.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+#if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+#  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+#fi
 
 # for rustup completions: mkdir ~/.zfunc, then put next line before compinit
 fpath+=~/.zfunc
@@ -103,14 +103,14 @@ zinit wait lucid light-mode for \
       zsh-users/zsh-completions
 
 # Theme no. 1 – pure
-zinit lucid load'![[ $MYPROMPT = 1 ]]' unload'![[ $MYPROMPT != 1 ]]' \
- pick"/dev/null" multisrc"{async,pure}.zsh" atload'!prompt_pure_precmd' nocd for \
-    sindresorhus/pure
+#zinit lucid load'![[ $MYPROMPT = 1 ]]' unload'![[ $MYPROMPT != 1 ]]' \
+# pick"/dev/null" multisrc"{async,pure}.zsh" atload'!prompt_pure_precmd' nocd for \
+#    sindresorhus/pure
 
 # Theme no. 2 - powerlevel10k
-zinit load'![[ $MYPROMPT = 2 ]]' unload'![[ $MYPROMPT != 2 ]]' \
- atload'!source ~/.p10k.zsh; _p9k_precmd' lucid nocd for \
-    romkatv/powerlevel10k
+#zinit load'![[ $MYPROMPT = 2 ]]' unload'![[ $MYPROMPT != 2 ]]' \
+# atload'!source ~/.p10k.zsh; _p9k_precmd' lucid nocd for \
+#    romkatv/powerlevel10k
 
 zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
@@ -136,10 +136,10 @@ zinit wait'2' lucid for \
     wfxr/forgit
 
 # powerlevel10k
-MYPROMPT=2
+#MYPROMPT=2
 
 # Load within zshrc – for the instant prompt
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+#zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 ### End of Zinit's installer chunk
 
@@ -214,7 +214,7 @@ load-nvmrc
 # export PATH="$HOME/.cargo/bin/racer:$PATH"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+#[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 ### End of Zinit's installer chunk
 
 # >>> conda initialize >>>
@@ -250,3 +250,7 @@ alias cloc='tokei'
 alias ps='procs'
 alias sed='sd'
 alias top='btm'
+
+# Add starship to the end of ~/.zshrc
+eval "$(starship init zsh)"
+
