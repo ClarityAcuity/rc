@@ -86,8 +86,12 @@ zinit pick"misc/quitcd/quitcd.zsh" sbin make light-mode for jarun/nnn
 
 
 # cheat
-zinit ice mv=":zsh -> _cht" as="completion"
+zinit ice mv":zsh -> _cht" as"completion"
 zinit snippet https://cheat.sh/:zsh
+
+# conda
+zinit wait lucid as"completion" for \
+  blockf esc/conda-zsh-completion
 
 # Fast-syntax-highlighting & autosuggestions
 zinit wait lucid light-mode for \
@@ -163,9 +167,6 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 
-# added Miniconda path
-# export PATH="/home/villager/miniconda3/bin:$PATH"
-
 #[[ -s "/Users/Villager/.gvm/scripts/gvm" ]] && source "/Users/Villager/.gvm/scripts/gvm"
 # gvm pkgset use global
 # export GOPATH=$HOME/go
@@ -215,3 +216,37 @@ load-nvmrc
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 ### End of Zinit's installer chunk
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/villager/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/villager/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/villager/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/villager/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+# Created by `userpath` on 2020-04-11 05:49:03
+export PATH="$PATH:/home/villager/.local/bin"
+
+autoload -U bashcompinit
+bashcompinit
+
+# rust cli
+alias ls='exa'
+alias x='exa'
+alias find='fd'
+alias grep='rg'
+alias du='dust'
+alias cat='bat'
+alias time='hyperfine'
+alias cloc='tokei'
+alias ps='procs'
+alias sed='sd'
+alias top='btm'
