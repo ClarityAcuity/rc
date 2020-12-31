@@ -84,7 +84,6 @@ zinit light tj/git-extras
 # jarun/nnn, a file browser, using the for-syntax
 zinit pick"misc/quitcd/quitcd.zsh" sbin make light-mode for jarun/nnn
 
-
 # cheat
 zinit ice mv":zsh -> _cht" as"completion"
 zinit snippet https://cheat.sh/:zsh
@@ -144,35 +143,6 @@ zinit wait'2' lucid for \
 ### End of Zinit's installer chunk
 
 # User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# For a full list of active aliases, run `alias`.
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-
-#[[ -s "/Users/Villager/.gvm/scripts/gvm" ]] && source "/Users/Villager/.gvm/scripts/gvm"
-# gvm pkgset use global
-# export GOPATH=$HOME/go
-# export GOBIN=$HOME/go/bin
-# export PATH=$PATH:$GOBIN
-
 # add nvm path
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -213,10 +183,6 @@ load-nvmrc
 # add racer path
 # export PATH="$HOME/.cargo/bin/racer:$PATH"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-#[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-### End of Zinit's installer chunk
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/home/villager/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -235,9 +201,25 @@ unset __conda_setup
 # Created by `userpath` on 2020-04-11 05:49:03
 export PATH="$PATH:/home/villager/.local/bin"
 
-autoload -U bashcompinit
-bashcompinit
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
 
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='mvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch x86_64"
+
+# ssh
+# export SSH_KEY_PATH="~/.ssh/rsa_id"
+
+# For a full list of active aliases, run `alias`.
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
 # rust cli
 alias ls='exa'
 alias x='exa'
@@ -251,6 +233,19 @@ alias ps='procs'
 alias sed='sd'
 alias top='btm'
 
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+#[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+### End of Zinit's installer chunk
+
+# Bash tab complete
+autoload -U bashcompinit
+bashcompinit
+#source /path/to/your/bash_completion_file
+
+# load bash_profile
+if [ -f ~/.bash_profile ]; then 
+    . ~/.bash_profile;
+fi
+
 # Add starship to the end of ~/.zshrc
 eval "$(starship init zsh)"
-
