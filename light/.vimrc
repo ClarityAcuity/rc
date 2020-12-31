@@ -127,11 +127,7 @@ set clipboard=unnamed
 " Color
 set t_Co=256                  "set the terminal color to 256bit
 colo desert                   "個人喜好顏色配置
-set cursorline                "底線顯示目前游標行
-set cursorcolumn              "顯示當前游標列
-" 游標hilight
-hi CursorLine cterm=none ctermbg=DarkGray  ctermfg=White
-hi CursorColumn cterm=none ctermbg=DarkGray ctermfg=White
+
 " Search hilight
 hi Search cterm=reverse ctermbg=none ctermfg=none
 

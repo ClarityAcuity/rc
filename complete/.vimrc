@@ -108,6 +108,7 @@ set tabstop=4                 "tab=4格space
 set formatoptions+=r          "auto comment
 
 set number                    "顯示行數
+set relativenumber            "顯示相對行數
 set ruler                     "顯示右下角詳細訊息
 
 set ic                        "設定搜尋忽略大小寫
@@ -171,11 +172,11 @@ set clipboard=unnamed
 " Color
 set t_Co=256                  "set the terminal color to 256bit
 colo desert                   "個人喜好顏色配置
-set cursorline                "底線顯示目前游標行
-set cursorcolumn              "顯示當前游標列
+" set cursorline                "底線顯示目前游標行
+" set cursorcolumn              "顯示當前游標列
 " 游標hilight
-hi CursorLine cterm=none ctermbg=DarkGray  ctermfg=White
-hi CursorColumn cterm=none ctermbg=DarkGray ctermfg=White
+" hi CursorLine cterm=none ctermbg=DarkGray ctermfg=White
+" hi CursorColumn cterm=none ctermbg=DarkGray ctermfg=White
 " Search hilight
 hi Search cterm=reverse ctermbg=none ctermfg=none
 
