@@ -23,6 +23,9 @@ zinit light-mode for \
     OMZ::plugins/sudo/sudo.plugin.zsh \
     OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 
+# zsh-z
+zinit load agkozak/zsh-z
+
 # lib/git.zsh is loaded mostly to stay in touch with the plugin (for the users)
 # and for the themes 2 & 3 (lambda-mod-zsh-theme & lambda-gitster)
 zinit wait lucid for \
@@ -44,7 +47,7 @@ zinit wait'1' lucid from"gh-r" as"null" for \
      sbin"fzf"          junegunn/fzf-bin
 
 # Load within zshrc – for the instant prompt
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+# zinit ice depth=1; zinit light romkatv/powerlevel10k
 
 ### End of Zinit's installer chunk
 
