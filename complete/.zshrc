@@ -11,9 +11,9 @@ fpath+=~/.zfunc
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
+    print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma-continuum/zinit)…%f"
     command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.zinit/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
@@ -24,14 +24,11 @@ autoload -Uz _zinit
 
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
-# Zplugin annexes
-# zinit-zsh/z-a-man \
 zinit light-mode for \
-    zinit-zsh/z-a-test \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-submods \
-    zinit-zsh/z-a-bin-gem-node \
-    zinit-zsh/z-a-rust
+    zdharma-continuum/zinit-annex-as-monitor \
+    zdharma-continuum/zinit-annex-bin-gem-node \
+    zdharma-continuum/zinit-annex-patch-dl \
+    zdharma-continuum/zinit-annex-rust
 
 # OMZ
 zinit light-mode for \
@@ -45,10 +42,13 @@ zinit light-mode for \
     OMZ::plugins/sudo/sudo.plugin.zsh \
     OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 
+# zsh-z
+zinit load agkozak/zsh-z
+
 # lib/git.zsh is loaded mostly to stay in touch with the plugin (for the users)
 # and for the themes 2 & 3 (lambda-mod-zsh-theme & lambda-gitster)
 zinit wait lucid for \
-    zdharma/zsh-unique-id \
+    zdharma-continuum/zsh-unique-id \
     OMZ::lib/git.zsh \
  atload"unalias grv g" \
     OMZ::plugins/git/git.plugin.zsh
@@ -70,7 +70,7 @@ zinit load docker/compose
 # Vim repository on GitHub – a typical source code that needs compilation – Zinit
 # can manage it for you if you like, run `./configure` and other `make`, etc. stuff.
 # Ice-mod `pick` selects a binary program to add to $PATH. You could also install the
-# package under the path $ZPFX, see: http://zdharma.org/zinit/wiki/Compiling-programs
+# package under the path $ZPFX, see: https://zdharma-continuum.github.io/zinit/wiki/Compiling-programs
 zinit ice as"program" atclone"rm -f src/auto/config.cache; ./configure" \
     atpull"%atclone" make pick"src/vim"
 zinit light vim/vim
@@ -95,7 +95,7 @@ zinit wait lucid as"completion" for \
 # Fast-syntax-highlighting & autosuggestions
 zinit wait lucid light-mode for \
   atinit"zicompinit; zicdreplay" \
-      zdharma/fast-syntax-highlighting \
+      zdharma-continuum/fast-syntax-highlighting \
   atload"_zsh_autosuggest_start" \
       zsh-users/zsh-autosuggestions \
   blockf atpull'zinit creinstall -q .' \
@@ -124,15 +124,17 @@ zinit wait'1' lucid from"gh-r" as"null" for \
 
 # A few wait'2' plugins
 zinit wait'2' lucid for \
-    zdharma/declare-zsh \
-    zdharma/zflai \
+    zdharma-continuum/declare-zsh \
+    zdharma-continuum/zflai \
  blockf \
-    zdharma/zui \
-    zinit-zsh/zinit-console \
+    zdharma-continuum/zui \
+    zdharma-continuum/zinit-console \
  trigger-load'!crasis' \
-    zdharma/zplugin-crasis \
+    zdharma-continuum/zinit-crasis \
  atinit"forgit_ignore='fgi'" \
     wfxr/forgit
+
+### End of Zinit's installer chunk
 
 # powerlevel10k
 #MYPROMPT=2
@@ -221,17 +223,16 @@ export PATH="$PATH:/home/villager/.local/bin"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # rust cli
-alias ls='exa'
-alias x='exa'
-alias find='fd'
-alias grep='rg'
-alias du='dust'
-alias cat='bat'
-alias time='hyperfine'
-alias cloc='tokei'
-alias ps='procs'
-alias sed='sd'
-alias top='btm'
+# alias ls='exa'
+# alias find='fd'
+# alias grep='rg'
+# alias du='dust'
+# alias cat='bat'
+# alias time='hyperfine'
+# alias cloc='tokei'
+# alias ps='procs'
+# alias sed='sd'
+# alias top='btm'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 #[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
