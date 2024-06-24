@@ -1,14 +1,3 @@
-# OK to perform console I/O before this point.
-#if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-#  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-#fi
-
-# for rustup completions: mkdir ~/.zfunc, then put next line before compinit
-fpath+=~/.zfunc
-
-# let prompt at bottom
-# printf "\n%.0s" {1..100}
-
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma-continuum/zinit)…%f"
@@ -33,7 +22,6 @@ zinit light-mode for \
 # OMZ
 zinit light-mode for \
     OMZ::lib/clipboard.zsh \
-    OMZ::lib/completion.zsh \
     OMZ::lib/history.zsh \
     OMZ::lib/key-bindings.zsh \
     OMZ::lib/theme-and-appearance.zsh \
@@ -64,16 +52,18 @@ zinit light-mode lucid for \
 # single version, for OS X, Linux and Windows – so ice-mod `bpick' is used to
 # select Linux package – in this case this is actually not needed, Zinit will
 # grep operating system name and architecture automatically when there's no `bpick'.
-zinit ice from"gh-r" as"program" mv"docker* -> docker-compose" bpick"*linux*"
-zinit load docker/compose
+
+# zinit ice from"gh-r" as"program" mv"docker* -> docker-compose" bpick"*linux*"
+# zinit load docker/compose
 
 # Vim repository on GitHub – a typical source code that needs compilation – Zinit
 # can manage it for you if you like, run `./configure` and other `make`, etc. stuff.
 # Ice-mod `pick` selects a binary program to add to $PATH. You could also install the
 # package under the path $ZPFX, see: https://zdharma-continuum.github.io/zinit/wiki/Compiling-programs
-zinit ice as"program" atclone"rm -f src/auto/config.cache; ./configure" \
-    atpull"%atclone" make pick"src/vim"
-zinit light vim/vim
+
+# zinit ice as"program" atclone"rm -f src/auto/config.cache; ./configure" \
+#     atpull"%atclone" make pick"src/vim"
+# zinit light vim/vim
 
 # Scripts that are built at install (there's single default make target, "install",
 # and it constructs scripts by `cat'ing a few files). The make'' ice could also be:
@@ -87,10 +77,6 @@ zinit pick"misc/quitcd/quitcd.zsh" sbin make light-mode for jarun/nnn
 # cheat
 zinit ice mv":zsh -> _cht" as"completion"
 zinit snippet https://cheat.sh/:zsh
-
-# conda
-zinit wait lucid as"completion" for \
-  blockf esc/conda-zsh-completion
 
 # Fast-syntax-highlighting & autosuggestions
 zinit wait lucid light-mode for \
@@ -106,21 +92,13 @@ zinit wait lucid light-mode for \
 # pick"/dev/null" multisrc"{async,pure}.zsh" atload'!prompt_pure_precmd' nocd for \
 #    sindresorhus/pure
 
-# Theme no. 2 - powerlevel10k
-#zinit load'![[ $MYPROMPT = 2 ]]' unload'![[ $MYPROMPT != 2 ]]' \
-# atload'!source ~/.p10k.zsh; _p9k_precmd' lucid nocd for \
-#    romkatv/powerlevel10k
-
 zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
     atpull'%atclone' pick"clrs.zsh" nocompile'!' \
     atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
 zinit light trapd00r/LS_COLORS
 
 zinit wait'1' lucid from"gh-r" as"null" for \
-     sbin"fzf"          junegunn/fzf-bin \
-     sbin"**/fd"        @sharkdp/fd \
-     sbin"**/bat"       @sharkdp/bat \
-     sbin"exa* -> exa"  ogham/exa
+     sbin"fzf"          junegunn/fzf-bin
 
 # A few wait'2' plugins
 zinit wait'2' lucid for \
@@ -136,41 +114,7 @@ zinit wait'2' lucid for \
 
 ### End of Zinit's installer chunk
 
-# powerlevel10k
-#MYPROMPT=2
-
-# Load within zshrc – for the instant prompt
-#zinit ice depth=1; zinit light romkatv/powerlevel10k
-
-### End of Zinit's installer chunk
-
 # User configuration
-# add nvm path
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# place this after nvm initialization!
-autoload -U add-zsh-hook
-load-nvmrc() {
-  local node_version="$(nvm version)"
-  local nvmrc_path="$(nvm_find_nvmrc)"
-
-  if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-    if [ "$nvmrc_node_version" = "N/A" ]; then
-      nvm install
-    elif [ "$nvmrc_node_version" != "$node_version" ]; then
-      nvm use
-    fi
-  elif [ "$node_version" != "$(nvm version default)" ]; then
-    echo "Reverting to nvm default version"
-    nvm use default
-  fi
-}
-add-zsh-hook chpwd load-nvmrc
-load-nvmrc
 
 # add rust path
 # export PATH="$HOME/.cargo/bin:$PATH"
@@ -184,24 +128,6 @@ load-nvmrc
 
 # add racer path
 # export PATH="$HOME/.cargo/bin/racer:$PATH"
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/villager/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/villager/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/villager/miniconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/villager/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-
-# Created by `userpath` on 2020-04-11 05:49:03
-export PATH="$PATH:/home/villager/.local/bin"
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -235,21 +161,4 @@ export PATH="$PATH:/home/villager/.local/bin"
 # alias top='btm'
 
 # Mac vim
-alias vim=$(find /opt/homebrew/Cellar/vim -name vim -type f | sort -Vr | head -n 1)
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-#[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-### End of Zinit's installer chunk
-
-# Bash tab complete
-autoload -U bashcompinit
-bashcompinit
-#source /path/to/your/bash_completion_file
-
-# load bash_profile
-if [ -f ~/.bash_profile ]; then 
-    . ~/.bash_profile;
-fi
-
-# Add starship to the end of ~/.zshrc
-eval "$(starship init zsh)"
+# alias vim=$(find /opt/homebrew/Cellar/vim -name vim -type f | sort -Vr | head -n 1)
