@@ -326,14 +326,13 @@ rec {
     # This way, my functions could be stored under
     # .config/zsh/lib
     dotDir = ".config/zsh";
-
     autosuggestion = {
       enable = true;
     };
     history = {
       size = 50000;
       save = 500000;
-      path = "${dotDir}/history";
+      path = "$HOME/.zsh_history";
       extended = true;
       ignoreDups = true;
       share = true;
