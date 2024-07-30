@@ -4,6 +4,14 @@ let
     ./darwin-application-activation.nix
   ];
 
+  # yazi
+  plugins-repo = pkgs.fetchFromGitHub {
+    owner = "yazi-rs";
+    repo = "plugins";
+    rev = "06e5fe1c7a2a4009c483b28b298700590e7b6784";
+    hash = "sha256-jg8+GDsHOSIh8QPYxCvMde1c1D9M78El0PljSerkLQc=";
+  };
+
   #   sources = import ./nix/sources.nix;
   #   overlays = let path = ./nix/overlays; in
   #     with builtins;
@@ -59,20 +67,27 @@ rec {
     packages = with pkgs;
       [
         bat
+        colima
         eza
         fd
+        fnm
         # git
         gitAndTools.gitFull
         gitAndTools.hub
         htop
+        kubectl
         nix-prefetch-github # prefetch sources from github for nix build tool
         nixpkgs-fmt # for nix ide
+        nerdfonts
         p7zip
         python3
         ripgrep
         rsync
+        ta-lib
       ];
   };
+
+  nixpkgs.config = { allowUnsupportedSystem = true; };
 
   # TODO: check the following apps (might need nix-darwin)
   # duf
@@ -144,6 +159,7 @@ rec {
 
   programs.direnv = {
     enable = true;
+    enableZshIntegration = true;
     nix-direnv = {
       enable = true;
     };
@@ -211,6 +227,76 @@ rec {
 
   # enable Bash And Zsh shell history suggest box
   programs.hstr.enable = true;
+
+  # Kubernetes CLI To Manage Your Clusters In Style
+  programs.k9s = {
+    enable = true;
+    package = pkgs.k9s;
+    aliases = {
+      alias = {
+        # Use pp as an alias for Pod
+        pp = "v1/pods";
+      };
+    };
+    hotkey = {
+      # Make sure this is camel case
+      hotKey = {
+        shift-0 = {
+          shortCut = "Shift-0";
+          description = "Viewing pods";
+          command = "pods";
+        };
+      };
+    };
+    plugin = {
+      # Defines a plugin to provide a `ctrl-l` shortcut to
+      # tail the logs while in pod view.
+      fred = {
+        shortCut = "Ctrl-L";
+        description = "Pod logs";
+        scopes = [ "po" ];
+        command = "kubectl";
+        background = false;
+        args = [
+          "logs"
+          "-f"
+          "$NAME"
+          "-n"
+          "$NAMESPACE"
+          "--context"
+          "$CLUSTER"
+        ];
+      };
+    };
+
+    settings = {
+      k9s = {
+        refreshRate = 2;
+      };
+    };
+    skins = {
+      my_blue_skin = {
+        k9s = {
+          body = {
+            fgColor = "dodgerblue";
+          };
+        };
+      };
+    };
+    views = {
+      "v1/pods" = {
+        columns = [
+          "AGE"
+          "NAMESPACE"
+          "NAME"
+          "IP"
+          "NODE"
+          "STATUS"
+          "READY"
+        ];
+      };
+    };
+  };
 
   # Starship cli
   programs.starship = {
@@ -317,6 +403,48 @@ rec {
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
+
+    settings = {
+      manager = {
+        show_hidden = true;
+      };
+      preview = {
+        max_width = 1000;
+        max_height = 1000;
+      };
+    };
+
+    plugins = {
+      chmod = "${plugins-repo}/chmod.yazi";
+      full-border = "${plugins-repo}/full-border.yazi";
+      max-preview = "${plugins-repo}/max-preview.yazi";
+      starship = pkgs.fetchFromGitHub {
+        owner = "Rolv-Apneseth";
+        repo = "starship.yazi";
+        rev = "0a141f6dd80a4f9f53af8d52a5802c69f5b4b618";
+        sha256 = "sha256-OL4kSDa1BuPPg9N8QuMtl+MV/S24qk5R1PbO0jgq2rA=";
+      };
+    };
+
+    # initLua = ''
+    #   			require("full-border"):setup()
+    #   			require("starship"):setup()
+    #   		'';
+
+    keymap = {
+      manager.prepend_keymap = [
+        {
+          on = [ "T" ];
+          run = "plugin --sync max-preview";
+          desc = "Maximize or restore the preview pane";
+        }
+        {
+          on = [ "c" "m" ];
+          run = "plugin chmod";
+          desc = "Chmod on selected files";
+        }
+      ];
+    };
   };
 
   programs.zsh = rec {
@@ -470,6 +598,8 @@ rec {
       bindkey '^[[A' history-substring-search-up
       bindkey '^[[B' history-substring-search-down
       ${builtins.readFile dotfiles/dot-zshrc}
+
+      eval "$(fnm env)"
     '';
 
     plugins = [
@@ -585,8 +715,8 @@ rec {
       NSAutomaticPeriodSubstitutionEnabled = false;
       # Disable auto-correct
       NSAutomaticSpellingCorrectionEnabled = false;
-      # Disable “natural” (Lion-style) scrolling
-      "com.apple.swipescrolldirection" = false;
+      # Enable “natural” (Lion-style) scrolling
+      "com.apple.swipescrolldirection" = true;
       # Trackpad: enable tap to click for this user
       "com.apple.mouse.tapBehavior" = 1;
       # Trackpad: map tap with two fingers to secondary click
