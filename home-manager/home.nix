@@ -135,6 +135,10 @@ rec {
 
     ".gitconfig".source = ./gitconfig;
     ".gitaliases".source = ./gitaliases;
+    # the bellow 3 line are pretty much the same to put wezterm.lua to nix wezterm config
+    # "./config/wezterm/wezterm.lua".source = ./dotfiles/wezterm/wezterm.lua;
+    # xdg.configFile."wezterm/wezterm.lua".source = ./dotfiles/wezterm/wezterm.lua;
+    # programs.wezterm.extraConfig
   };
 
   # Home Manager can also manage your environment variables through
@@ -233,7 +237,7 @@ rec {
     enable = true;
     package = pkgs.k9s;
     aliases = {
-      alias = {
+      aliases = {
         # Use pp as an alias for Pod
         pp = "v1/pods";
       };
@@ -445,6 +449,28 @@ rec {
         }
       ];
     };
+  };
+
+  programs.wezterm = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+    extraConfig = builtins.readFile dotfiles/wezterm/wezterm.lua;
+    # extraConfig = ''
+    # -- Pull in the wezterm API
+    # local wezterm = require 'wezterm'
+
+    # -- This will hold the configuration.
+    # local config = wezterm.config_builder()
+
+    # -- This is where you actually apply your config choices
+
+    # -- For example, changing the color scheme:
+    # config.color_scheme = 'AdventureTime'
+
+    # -- and finally, return the configuration to wezterm
+    # return config
+    # '';
   };
 
   programs.zsh = rec {
