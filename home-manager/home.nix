@@ -68,12 +68,14 @@ rec {
       [
         bat
         colima
+        docker
         eza
         fd
-        fnm
+        ffmpeg
         # git
         gitAndTools.gitFull
         gitAndTools.hub
+        (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
         htop
         kubectl
         nix-prefetch-github # prefetch sources from github for nix build tool
@@ -84,6 +86,7 @@ rec {
         ripgrep
         rsync
         ta-lib
+        volta
       ];
   };
 
@@ -625,7 +628,7 @@ rec {
       bindkey '^[[B' history-substring-search-down
       ${builtins.readFile dotfiles/dot-zshrc}
 
-      eval "$(fnm env)"
+      VOLTA_FEATURE_PNPM=1
     '';
 
     plugins = [
