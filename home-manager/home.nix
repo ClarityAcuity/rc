@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 let
-  imports = [
-    ./darwin-application-activation.nix
-  ];
+  imports = [ ./darwin-application-activation.nix ];
 
   # yazi
   plugins-repo = pkgs.fetchFromGitHub {
@@ -12,22 +10,22 @@ let
     hash = "sha256-jg8+GDsHOSIh8QPYxCvMde1c1D9M78El0PljSerkLQc=";
   };
 
-  #   sources = import ./nix/sources.nix;
-  #   overlays = let path = ./nix/overlays; in
-  #     with builtins;
-  #     map (n: import (path + ("/" + n)))
-  #       (filter
-  #         (n: match ".*\\.nix" n != null ||
-  #           pathExists (path + ("/" + n + "/default.nix")))
-  #         (attrNames (readDir path)));
-  #   pkgs = import sources.nixpkgs {
-  #     # Get all files in overlays
-  #     overlays = [
-  #       (_self: super: { inherit sources; })
-  #     ] ++ overlays;
-  #   };
-  #   link = config.lib.file.mkOutOfStoreSymlink;
 in
+#   sources = import ./nix/sources.nix;
+#   overlays = let path = ./nix/overlays; in
+#     with builtins;
+#     map (n: import (path + ("/" + n)))
+#       (filter
+#         (n: match ".*\\.nix" n != null ||
+#           pathExists (path + ("/" + n + "/default.nix")))
+#         (attrNames (readDir path)));
+#   pkgs = import sources.nixpkgs {
+#     # Get all files in overlays
+#     overlays = [
+#       (_self: super: { inherit sources; })
+#     ] ++ overlays;
+#   };
+#   link = config.lib.file.mkOutOfStoreSymlink;
 
 rec {
   # Let Home Manager install and manage itself.
@@ -64,33 +62,36 @@ rec {
     username = "villager";
     homeDirectory = /Users/villager;
     stateVersion = "24.05"; # Please read the comment before changing.
-    packages = with pkgs;
-      [
-        bat
-        colima
-        docker
-        eza
-        fd
-        ffmpeg
-        # git
-        gitAndTools.gitFull
-        gitAndTools.hub
-        (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
-        htop
-        kubectl
-        nix-prefetch-github # prefetch sources from github for nix build tool
-        nixpkgs-fmt # for nix ide
-        nerdfonts
-        p7zip
-        python3
-        ripgrep
-        rsync
-        ta-lib
-        volta
-      ];
+    packages = with pkgs; [
+      bat
+      colima
+      docker
+      exercism
+      eza
+      fd
+      ffmpeg
+      # git
+      gitAndTools.gitFull
+      gitAndTools.hub
+      (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
+      htop
+      kubectl
+      nil
+      nix-prefetch-github # prefetch sources from github for nix build tool
+      nixfmt-rfc-style # To install nixfmt in Home Manager
+      nerdfonts
+      p7zip
+      python3
+      ripgrep
+      rsync
+      ta-lib
+      volta
+    ];
   };
 
-  nixpkgs.config = { allowUnsupportedSystem = true; };
+  nixpkgs.config = {
+    allowUnsupportedSystem = true;
+  };
 
   # TODO: check the following apps (might need nix-darwin)
   # duf
@@ -227,9 +228,7 @@ rec {
       "result-*"
     ];
     # see home.file.".gitaliases".source below
-    includes = [
-      { path = "~/.gitaliases"; }
-    ];
+    includes = [ { path = "~/.gitaliases"; } ];
   };
 
   # enable Bash And Zsh shell history suggest box
@@ -446,7 +445,10 @@ rec {
           desc = "Maximize or restore the preview pane";
         }
         {
-          on = [ "c" "m" ];
+          on = [
+            "c"
+            "m"
+          ];
           run = "plugin chmod";
           desc = "Chmod on selected files";
         }
@@ -628,31 +630,33 @@ rec {
       bindkey '^[[B' history-substring-search-down
       ${builtins.readFile dotfiles/dot-zshrc}
 
+      # volta
       VOLTA_FEATURE_PNPM=1
+      export VOLTA_HOME=$HOME/.volta
+      export PATH=$VOLTA_HOME/bin:$PATH
+      unset _VOLTA_TOOL_RECURSION in each
     '';
 
     plugins = [
       {
         name = "zsh-history-substring-search";
         file = "zsh-history-substring-search.zsh";
-        src = pkgs.fetchFromGitHub
-          {
-            owner = "zsh-users";
-            repo = "zsh-history-substring-search";
-            rev = "v1.1.0";
-            sha256 = "0y8va5kc2ram38hbk2cibkk64ffrabfv1sh4xm7pjspsba9n5p1y";
-          };
+        src = pkgs.fetchFromGitHub {
+          owner = "zsh-users";
+          repo = "zsh-history-substring-search";
+          rev = "v1.1.0";
+          sha256 = "0y8va5kc2ram38hbk2cibkk64ffrabfv1sh4xm7pjspsba9n5p1y";
+        };
       }
       {
         name = "zsh-autosuggestions";
         file = "zsh-autosuggestions.zsh";
-        src = pkgs.fetchFromGitHub
-          {
-            owner = "zsh-users";
-            repo = "zsh-autosuggestions";
-            rev = "c3d4e576c9c86eac62884bd47c01f6faed043fc5";
-            sha256 = "sha256-B+Kz3B7d97CM/3ztpQyVkE6EfMipVF8Y4HJNfSRXHtU=";
-          };
+        src = pkgs.fetchFromGitHub {
+          owner = "zsh-users";
+          repo = "zsh-autosuggestions";
+          rev = "c3d4e576c9c86eac62884bd47c01f6faed043fc5";
+          sha256 = "sha256-B+Kz3B7d97CM/3ztpQyVkE6EfMipVF8Y4HJNfSRXHtU=";
+        };
       }
       {
         name = "zsh-syntax-highlighting";
@@ -793,6 +797,12 @@ rec {
         {
           "Bundle ID" = "com.apple.PressAndHold";
           InputSourceKind = "Non Keyboard Input Method";
+        }
+        # why RomajiTyping not work?
+        {
+          "Bundle ID" = "com.apple.inputmethod.Kotoeri.RomajiTyping";
+          InputSourceKind = "Input Mode";
+          "Input Mode" = "com.apple.inputmethod.Japanese";
         }
 
         {
