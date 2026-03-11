@@ -64,6 +64,7 @@ rec {
     stateVersion = "24.05"; # Please read the comment before changing.
     packages = with pkgs; [
       bat
+      bats
       colima
       docker
       exercism
@@ -71,15 +72,15 @@ rec {
       fd
       ffmpeg
       # git
-      gitAndTools.gitFull
-      gitAndTools.hub
+      gitFull
+      git-hub
       (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
       htop
       kubectl
       nil
       nix-prefetch-github # prefetch sources from github for nix build tool
       nixfmt-rfc-style # To install nixfmt in Home Manager
-      nerdfonts
+      nerd-fonts.meslo-lg # nerd-fonts
       p7zip
       python3
       ripgrep
@@ -177,14 +178,16 @@ rec {
 
   programs.git = {
     enable = true;
-    package = pkgs.gitAndTools.gitFull;
-    userEmail = "zonapha770709@hotmail.com";
-    userName = "ClarityAcuity";
+    package = pkgs.gitFull;
     # aliases are defined in ~/.gitaliases
     #   aliases = {
     #     ap = "add -p";
     #   };
-    extraConfig = {
+    settings = {
+      user = {
+        email = "zonapha770709@hotmail.com";
+        name = "ClarityAcuity";
+      };
       color = {
         status = "auto";
         diff = "auto";
@@ -244,7 +247,7 @@ rec {
         pp = "v1/pods";
       };
     };
-    hotkey = {
+    hotKeys = {
       # Make sure this is camel case
       hotKey = {
         shift-0 = {
@@ -254,7 +257,7 @@ rec {
         };
       };
     };
-    plugin = {
+    plugins = {
       # Defines a plugin to provide a `ctrl-l` shortcut to
       # tail the logs while in pod view.
       fred = {
@@ -303,6 +306,58 @@ rec {
       };
     };
   };
+
+  # programs.openclaw = {
+  #   enable = true;
+  #   config = {
+  #     gateway = {
+  #       mode = "local";
+  #       auth = {
+  #         token = "<gatewayToken>"; # or set OPENCLAW_GATEWAY_TOKEN
+  #       };
+  #     };
+
+  #     # channels.telegram = {
+  #     #   tokenFile = "/run/agenix/telegram-bot-token"; # any file path works
+  #     #   allowFrom = [ 12345678 ]; # your Telegram user ID
+  #     # };
+  #   };
+
+  #   bundledPlugins = {
+  #     summarize.enable = true; # Summarize web pages, PDFs, videos
+  #     peekaboo.enable = true; # Take screenshots
+  #     poltergeist.enable = false; # Control your macOS UI
+  #     sag.enable = false; # Text-to-speech
+  #     camsnap.enable = false; # Camera snapshots
+  #     gogcli.enable = false; # Google Calendar
+  #     goplaces = {
+  #       # Google Places API
+  #       enable = true;
+  #       config.env.GOOGLE_PLACES_API_KEY = "/run/agenix/google-places-api-key";
+  #     };
+  #     bird.enable = false; # Twitter/X
+  #     sonoscli.enable = false; # Sonos control
+  #     imsg.enable = false; # iMessage
+  #   };
+
+  #   # Built-ins (tools + skills) shipped via nix-steipete-tools.
+  #   plugins = [ { source = "github:openclaw/nix-steipete-tools?dir=tools/summarize"; } ];
+
+  #   instances.default = {
+  #     enable = true;
+  #     package = pkgs.openclaw; # batteries-included
+  #     stateDir = "~/.openclaw";
+  #     workspaceDir = "~/.openclaw/workspace";
+  #     launchd.enable = true;
+
+  #     # Plugins (prod: pinned GitHub). Built-ins are via nix-steipete-tools.
+  #     # MVP target: repo pointers resolve to tools + skills automatically.
+  #     plugins = [
+  #       { source = "github:openclaw/nix-steipete-tools?dir=tools/peekaboo"; }
+  #       { source = "github:joshp123/xuezh"; }
+  #     ];
+  #   };
+  # };
 
   # Starship cli
   programs.starship = {
@@ -484,7 +539,7 @@ rec {
     shellAliases = { };
     # This way, my functions could be stored under
     # .config/zsh/lib
-    dotDir = ".config/zsh";
+    dotDir = "${config.home.homeDirectory}/.config/zsh";
     autosuggestion = {
       enable = true;
     };
