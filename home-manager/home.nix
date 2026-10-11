@@ -1,7 +1,5 @@
 { config, pkgs, ... }:
 let
-  imports = [ ./darwin-application-activation.nix ];
-
   # yazi
   plugins-repo = pkgs.fetchFromGitHub {
     owner = "yazi-rs";
@@ -27,7 +25,8 @@ in
 #   };
 #   link = config.lib.file.mkOutOfStoreSymlink;
 
-rec {
+{
+  imports = [ ./darwin-application-activation.nix ];
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
@@ -87,6 +86,12 @@ rec {
       rsync
       ta-lib
       volta
+      # rust
+      rustc
+      cargo
+      rustfmt
+      clippy
+      rust-analyzer
     ];
   };
 
@@ -118,10 +123,9 @@ rec {
 
   xdg = {
     enable = true;
-
-    configHome = /Users/villager/.config;
-    dataHome = /Users/villager/.local/share;
-    cacheHome = /Users/villager/.cache;
+    configHome = "${config.home.homeDirectory}/.config";
+    dataHome = "${config.home.homeDirectory}/.local/share";
+    cacheHome = "${config.home.homeDirectory}/.cache";
   };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -162,8 +166,16 @@ rec {
   #
   #  /etc/profiles/per-user/villager/etc/profile.d/hm-session-vars.sh
   #
+
+  home.sessionPath = [
+    "$HOME/.cargo/bin"
+    "$HOME/.volta/bin"
+  ];
+
   home.sessionVariables = {
     # EDITOR = "emacs";
+    VOLTA_HOME = "$HOME/.volta";
+    VOLTA_FEATURE_PNPM = "1";
   };
 
   programs.direnv = {
@@ -533,10 +545,9 @@ rec {
     # '';
   };
 
-  programs.zsh = rec {
+  programs.zsh = {
     enable = true;
     enableCompletion = true;
-    shellAliases = { };
     # This way, my functions could be stored under
     # .config/zsh/lib
     dotDir = "${config.home.homeDirectory}/.config/zsh";
@@ -563,10 +574,6 @@ rec {
       EDITOR = "vim";
       VISUAL = EDITOR;
       GIT_EDITOR = EDITOR;
-
-      XDG_CONFIG_HOME = xdg.configHome;
-      XDG_CACHE_HOME = xdg.cacheHome;
-      XDG_DATA_HOME = xdg.dataHome;
 
       # GOPATH = "$HOME/go";
       # PATH = "$HOME/bin:$GOPATH/bin:$PATH";
@@ -687,9 +694,7 @@ rec {
 
       # volta
       VOLTA_FEATURE_PNPM=1
-      export VOLTA_HOME=$HOME/.volta
-      export PATH=$VOLTA_HOME/bin:$PATH
-      unset _VOLTA_TOOL_RECURSION in each
+      unset _VOLTA_TOOL_RECURSION
     '';
 
     plugins = [
@@ -777,10 +782,6 @@ rec {
       springboard-columns = 7;
       springboard-rows = 5;
     };
-    # Disable Dashboard
-    "com.apple.dashboard" = {
-      "mcx-disabled" = true;
-    };
     "Apple Global Domain" = {
       # Enable full keyboard access for all controls (e.g. enable Tab in modal dialogs) (default: not set).
       AppleKeyboardUIMode = 3;
@@ -837,6 +838,7 @@ rec {
       TrackpadCornerSecondaryClick = 1;
       TrackpadRightClick = true;
     };
+    # Bash: defaults read com.apple.HIToolbox AppleEnabledInputSources
     "com.apple.HIToolbox" = {
       AppleCurrentKeyboardLayoutInputSourceID = "com.apple.keylayout.ABC";
       AppleEnabledInputSources = [
@@ -853,12 +855,6 @@ rec {
           "Bundle ID" = "com.apple.PressAndHold";
           InputSourceKind = "Non Keyboard Input Method";
         }
-        # why RomajiTyping not work?
-        {
-          "Bundle ID" = "com.apple.inputmethod.Kotoeri.RomajiTyping";
-          InputSourceKind = "Input Mode";
-          "Input Mode" = "com.apple.inputmethod.Japanese";
-        }
 
         {
           "Bundle ID" = "com.apple.inputmethod.TCIM";
@@ -868,6 +864,20 @@ rec {
         {
           "Bundle ID" = "com.apple.inputmethod.TCIM";
           InputSourceKind = "Keyboard Input Method";
+        }
+
+        {
+          "Bundle ID" = "com.apple.inputmethod.Kotoeri.RomajiTyping";
+          "Input Mode" = "com.apple.inputmethod.Japanese";
+          InputSourceKind = "Input Mode";
+        }
+        {
+          "Bundle ID" = "com.apple.inputmethod.Kotoeri.RomajiTyping";
+          InputSourceKind = "Keyboard Input Method";
+        }
+        {
+          "Bundle ID" = "com.apple.50onPaletteIM";
+          InputSourceKind = "Non Keyboard Input Method";
         }
       ];
       AppleSelectedInputSources = [
