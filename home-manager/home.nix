@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   # yazi
   plugins-repo = pkgs.fetchFromGitHub {
@@ -78,9 +83,10 @@ in
       kubectl
       nil
       nix-prefetch-github # prefetch sources from github for nix build tool
-      nixfmt-rfc-style # To install nixfmt in Home Manager
+      nixfmt # To install nixfmt in Home Manager
       nerd-fonts.meslo-lg # nerd-fonts
       p7zip
+      uv
       python3
       ripgrep
       rsync
@@ -128,8 +134,11 @@ in
     cacheHome = "${config.home.homeDirectory}/.cache";
   };
 
+  home.backupFileExtension = "backup";
+
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
+
   home.file = {
     # # Building this configuration will create a copy of 'dotfiles/screenrc' in
     # # the Nix store. Activating the configuration will then make '~/.screenrc' a
@@ -174,6 +183,7 @@ in
 
   home.sessionVariables = {
     # EDITOR = "emacs";
+    UV_PYTHON_PREFERENCE = "only-system";
     VOLTA_HOME = "$HOME/.volta";
     VOLTA_FEATURE_PNPM = "1";
   };
@@ -382,6 +392,7 @@ in
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
+    withPython3 = true;
     withRuby = false;
     # plugins = with pkgs.vimPlugins; [
     # vim-easy-align
@@ -400,74 +411,47 @@ in
     # nerdtree
     # ];
     extraConfig = ''
-      " encode
-      if has ("multi_byte")
-        set fileencodings=utf-8,utf-16,big5,gb2312,gbk,gb18030,euc-jp,euc-kr,latin1
-      else
-        echoerr "If +multi_byte is not included, you should compile Vim with big features."
-      endif
-
-      set encoding=utf-8
-      set termencoding=utf-8
+      " 編碼與換行格式
+      set fileencodings=utf-8,utf-16,big5,gb2312,gbk,gb18030,euc-jp,euc-kr,latin1
       set fileformat=unix
 
-      " 去掉有關vi一致性模式, 避免以前版本一些bug和侷限
-      set nocompatible
+      " 縮排與排版
+      set expandtab                 " 用 space 代替 tab
+      set shiftwidth=4              " 縮排寬度
+      set softtabstop=4             " 編輯時 tab 等同 4 格
+      set tabstop=4                 " tab 寬度為 4 格
+      set cindent                   " C-style 縮排
+      set formatoptions+=r          " 換行自動補註解
 
-      syntax on                     "語法上色
-      set ai                        "自動縮排
-      set smartindent               "設定smartindent
-      set cindent                   "c style 縮排
-      set completeopt=longest,menu
-      set expandtab                 "用space代替tab
-      set shiftwidth=4              "自動縮排時空格數量
-      set softtabstop=4             "統一tab為4格 方便使用backspace
-      set tabstop=4                 "tab=4格space
-      set formatoptions+=r          "auto comment
-      set number                    "顯示行數
-      set relativenumber            "顯示相對行數
-      set ruler                     "顯示右下角詳細訊息
-      set ic                        "設定搜尋忽略大小寫
-      set history=100               "保留1000個使用過指令
-      set hlsearch                  "搜尋字加highlight
-      set incsearch                 "未輸入完成即顯示搜尋結果
-      set confirm                   "操作有衝突 以明確文字詢問
-      nohl                          "搜尋不會有底色
-      set nowrap                    "字串太長不自動換行
-      set showcmd                   "輸入命令顯示出來
+      " 行號與顯示
+      set number                    " 顯示行數
+      set relativenumber            " 顯示相對行數
+      set nowrap                    " 不自動折行
+      set scrolloff=3               " 捲動時邊界保留 3 行
+      set showmatch                 " 顯示對應括號
 
-      " thx to Walker088
-      set showmode                  "showing the edit status
+      " 搜尋與互動
+      set ignorecase                " 搜尋忽略大小寫
+      set smartcase                 " 若包含大寫字母則轉為精準匹配
+      set history=1000              " 保留指令歷史紀錄
+      set confirm                   " 衝突時以對話詢問
+      nohlsearch                    " 啟動時不殘留搜尋高亮
 
-      " Enable folding
+      " 摺疊
       set foldmethod=indent
       set foldlevel=99
 
-      set wildmenu
-
-      " 解決backspace不能使用問題
-      set backspace=indent,eol,start
-      set backspace=2
-
-      " vim禁用自動備份
+      " 備份與剪貼簿
       set nobackup
       set nowritebackup
       set noswapfile
+      set mouse=a
+      set clipboard=unnamed         " 共享系統剪貼簿 (macOS)
+      set noerrorbells              " 關閉錯誤嗶聲
 
-      " 顯示匹配的括號
-      set showmatch
-
-      " 功能設定
-      set noeb                      "去掉輸入錯誤提示聲音
-      " set autowrite               "自動保存
-      set autoread                  "文件被改動時自動載入
-      set scrolloff=3               "捲動時保留3行
-      set mouse=a                   "啟用滑鼠
-      set clipboard=unnamed         "共享剪貼簿
-
-      " 每次開啟 移動到上次離開位置
+      " 每次開啟移動到上次離開位置
       if has("autocmd")
-          au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
       endif
     '';
   };
@@ -476,6 +460,7 @@ in
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
+    shellWrapperName = "y";
 
     settings = {
       manager = {
@@ -569,7 +554,7 @@ in
 
       NVIM_TUI_ENABLE_TRUE_COLOR = "1";
 
-      BROWSER = if pkgs.stdenv.isDarwin then "open" else "xdg-open";
+      BROWSER = if pkgs.stdenv.hostPlatform.isDarwin then "open" else "xdg-open";
 
       EDITOR = "vim";
       VISUAL = EDITOR;
@@ -644,7 +629,7 @@ in
       unstash = "git stash pop";
       staged = "git diff --no-ext-diff --cached";
     };
-    initExtraFirst = ''
+    initContent = lib.mkBefore ''
       DIRSTACKSIZE=10
 
       setopt   notify globdots correct cdablevars autolist
