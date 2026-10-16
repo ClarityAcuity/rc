@@ -69,6 +69,8 @@ in
     packages = with pkgs; [
       bat
       bats
+      # rust
+      cargo-binstall
       colima
       docker
       exercism
@@ -86,18 +88,12 @@ in
       nixfmt # To install nixfmt in Home Manager
       nerd-fonts.meslo-lg # nerd-fonts
       p7zip
-      uv
-      python3
+      pkg-config
       ripgrep
       rsync
       ta-lib
-      volta
-      # rust
-      rustc
-      cargo
-      rustfmt
-      clippy
-      rust-analyzer
+      # python
+      uv
     ];
   };
 
@@ -178,14 +174,10 @@ in
 
   home.sessionPath = [
     "$HOME/.cargo/bin"
-    "$HOME/.volta/bin"
   ];
 
   home.sessionVariables = {
     # EDITOR = "emacs";
-    UV_PYTHON_PREFERENCE = "only-system";
-    VOLTA_HOME = "$HOME/.volta";
-    VOLTA_FEATURE_PNPM = "1";
   };
 
   programs.direnv = {
@@ -329,62 +321,40 @@ in
     };
   };
 
-  # programs.openclaw = {
-  #   enable = true;
-  #   config = {
-  #     gateway = {
-  #       mode = "local";
-  #       auth = {
-  #         token = "<gatewayToken>"; # or set OPENCLAW_GATEWAY_TOKEN
-  #       };
-  #     };
-
-  #     # channels.telegram = {
-  #     #   tokenFile = "/run/agenix/telegram-bot-token"; # any file path works
-  #     #   allowFrom = [ 12345678 ]; # your Telegram user ID
-  #     # };
-  #   };
-
-  #   bundledPlugins = {
-  #     summarize.enable = true; # Summarize web pages, PDFs, videos
-  #     peekaboo.enable = true; # Take screenshots
-  #     poltergeist.enable = false; # Control your macOS UI
-  #     sag.enable = false; # Text-to-speech
-  #     camsnap.enable = false; # Camera snapshots
-  #     gogcli.enable = false; # Google Calendar
-  #     goplaces = {
-  #       # Google Places API
-  #       enable = true;
-  #       config.env.GOOGLE_PLACES_API_KEY = "/run/agenix/google-places-api-key";
-  #     };
-  #     bird.enable = false; # Twitter/X
-  #     sonoscli.enable = false; # Sonos control
-  #     imsg.enable = false; # iMessage
-  #   };
-
-  #   # Built-ins (tools + skills) shipped via nix-steipete-tools.
-  #   plugins = [ { source = "github:openclaw/nix-steipete-tools?dir=tools/summarize"; } ];
-
-  #   instances.default = {
-  #     enable = true;
-  #     package = pkgs.openclaw; # batteries-included
-  #     stateDir = "~/.openclaw";
-  #     workspaceDir = "~/.openclaw/workspace";
-  #     launchd.enable = true;
-
-  #     # Plugins (prod: pinned GitHub). Built-ins are via nix-steipete-tools.
-  #     # MVP target: repo pointers resolve to tools + skills automatically.
-  #     plugins = [
-  #       { source = "github:openclaw/nix-steipete-tools?dir=tools/peekaboo"; }
-  #       { source = "github:joshp123/xuezh"; }
-  #     ];
-  #   };
-  # };
-
-  # Starship cli
-  programs.starship = {
+  programs.mise = {
     enable = true;
-    settings = { };
+    enableZshIntegration = true; # 自動幫你在 zsh 掛載動態 PATH hook
+
+    # 全域設定 (~/.config/mise/config.toml)
+    globalConfig = {
+      settings = {
+        # 保持預設 (false)，不啟用 corepack，避免雙重 shim 衝突
+        # node.corepack = false;
+        # 讓 mise 自動用 uv 建立虛擬環境
+        python.uv_venv_auto = true;
+        # 讓 cargo 後端優先使用 cargo-binstall 秒裝工具
+        cargo.binstall = true;
+        # 讓 macOS GUI 應用程式（如 VS Code / Cursor）也能讀到環境變數
+        activate_aggressive = true;
+        # 讓 mise 可以直接讀取專案既有的 .nvmrc 或 .node-version
+        idiomatic_version_file_enable_tools = [
+          "node"
+          "pnpm"
+          "python"
+          "rust"
+        ];
+      };
+
+      # 設定全域預設的語言版本 (當不在特定專案目錄時使用)
+      tools = {
+        node = "lts";
+        pnpm = "latest";
+        python = "3.12";
+        rust = "stable";
+        # 如果有需要，也可以順便管其他工具，例如：
+        # usage = "latest"; # mise 的自動補全依賴
+      };
+    };
   };
 
   programs.neovim = {
@@ -454,6 +424,12 @@ in
         au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
       endif
     '';
+  };
+
+  # Starship cli
+  programs.starship = {
+    enable = true;
+    settings = { };
   };
 
   # Yazi - ⚡️ Blazing Fast Terminal File Manager
@@ -677,9 +653,6 @@ in
       bindkey '^[[B' history-substring-search-down
       ${builtins.readFile dotfiles/dot-zshrc}
 
-      # volta
-      VOLTA_FEATURE_PNPM=1
-      unset _VOLTA_TOOL_RECURSION
     '';
 
     plugins = [
